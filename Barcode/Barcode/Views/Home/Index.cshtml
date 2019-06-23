@@ -1,0 +1,18 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="row" style="margin-top:10%" id="auto">
+    <b><p>Automatic  Print  ( You can use Chrome or Opera Kiosk Mode if you want to close print dialog) </p>  </b>
+    <input type="number" name="HowMany" id="HowMany" placeholder="HowMany Barcode Number" />
+    <button type="button" onclick="PrintStart()" class="btn btn-danger" data-style="slide-right">
+        Start to Print
+    </button>
+</div>
+
+<div class="row" >
+    <div id="drag2">
+        @{ Html.RenderAction("Barcode", "Home"); }
+    </div>
+</div>

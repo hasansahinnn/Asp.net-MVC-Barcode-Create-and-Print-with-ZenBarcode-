@@ -1,0 +1,72 @@
+﻿@using System.Drawing;
+@using System.Drawing.Printing;
+@{
+
+    byte[] image = Session["barcodeimagebyte"] as byte[];
+    string base64String = Convert.ToBase64String(image);
+}
+
+
+
+<br /><br />
+<div class="row">
+    <div class="col-md-3" id="drag">
+        <img src="@String.Format("data:image/png;base64,{0}", base64String)" />
+        <b><p style="font-size:18px;margin-left:3%;margin-top:-2px">F @Session["BarcodeNo"]</p></b>
+    </div>
+    <div class="form-group form-md-line-input has-success col-md-3">
+        <input type="number" class="form-control" id="barcodeno" name="barcodeno" min="100" value="@Session["BarcodeNo"]" placeholder="Barkod/Seri Numarası">
+        <label for="form_control_1">Barkod/Seri Numarası</label>
+    </div>
+    <div class="col-md-2">
+        <input type="button" onclick="create()" id="submit_100" value="Barcode Create" class="btn btn-primary" />
+    </div>
+    <div class="col-md-1">
+        <input type="button" onclick="print()" id="submit_101" value="Barcode Print" class="btn btn-success " />
+    </div>
+</div>
+<script src="~/Scripts/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/bootstrap.min.js"></script>
+<script src="~/Scripts/printThis.js"></script>
+<script type="text/javascript">
+
+
+    function print() {
+        w = window.open();
+        w.document.write($('#drag').html());
+        w.print();
+        w.close();
+
+    }
+
+    function create() {
+        var barcodeno = $("input[name=barcodeno]").val();
+        $.post({
+            url: '/Home/Barcode',
+            data: { barcodeno: barcodeno },
+            type: 'GET',
+            dataType: 'html',
+            success: function (data) {
+                $("#drag2").html(data);
+            }
+        });
+    }
+
+    function PrintStart() {
+        var number = $("input[name=HowMany]").val();
+        var number2 = $("input[name=HowMany]").val();
+        var barcode = $("input[name=barcodeno]").val();
+        for (var i = 1; i <= number; i++) {
+            (function (index) {
+                setTimeout(function () {
+                    print();
+                    $("input[name=barcodeno]").val(++barcode);
+                    $("input[name=HowMany]").val(--number2); 
+                    create();
+                }, index * 5000);
+            })(i);
+        }
+
+    }
+
+</script>
